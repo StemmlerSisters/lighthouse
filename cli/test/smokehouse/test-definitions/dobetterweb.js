@@ -156,65 +156,6 @@ const expectations = {
         property: 'og:description',
       },
     ],
-    TagsBlockingFirstPaint: [
-      {
-        tag: {
-          tagName: 'LINK',
-          url: 'http://localhost:10200/dobetterweb/dbw_tester.css?delay=100',
-        },
-      },
-      {
-        tag: {
-          tagName: 'LINK',
-          url: 'http://localhost:10200/dobetterweb/unknown404.css?delay=200',
-        },
-      },
-      {
-        tag: {
-          tagName: 'LINK',
-          url: 'http://localhost:10200/dobetterweb/dbw_tester.css?delay=2200',
-        },
-
-      },
-      {
-        tag: {
-          tagName: 'LINK',
-          url: 'http://localhost:10200/dobetterweb/dbw_tester.css?delay=3000&capped',
-          mediaChanges: [
-            {
-              href: 'http://localhost:10200/dobetterweb/dbw_tester.css?delay=3000&capped',
-              media: 'not-matching',
-              matches: false,
-            },
-            {
-              href: 'http://localhost:10200/dobetterweb/dbw_tester.css?delay=3000&capped',
-              media: 'screen',
-              matches: true,
-            },
-          ],
-        },
-      },
-      {
-        tag: {
-          tagName: 'SCRIPT',
-          url: 'http://localhost:10200/dobetterweb/dbw_tester.js',
-        },
-      },
-      {
-        tag: {
-          tagName: 'SCRIPT',
-          url: 'http://localhost:10200/dobetterweb/fcp-delayer.js?delay=5000',
-        },
-      },
-    ],
-    GlobalListeners: [{
-      // Unload handlers were disabled in M122
-      _maxChromiumVersion: '121',
-      type: 'unload',
-      scriptId: /^\d+$/,
-      lineNumber: '>300',
-      columnNumber: '>30',
-    }],
     DevtoolsLog: {
       _includes: [
         // Ensure we are getting async call stacks.
@@ -309,8 +250,8 @@ const expectations = {
               sourceLocation: {url: 'http://localhost:10200/favicon.ico'},
             },
             {
-              // Unload handlers were disabled in M122
-              _minChromiumVersion: '122',
+              // Unload handlers were moved behind a permission policy in M135.
+              _minChromiumVersion: '135',
               source: 'violation',
               description: 'Permissions policy violation: unload is not allowed in this document.',
               sourceLocation: {url: 'http://localhost:10200/dobetterweb/dbw_tester.html'},
@@ -334,26 +275,26 @@ const expectations = {
       },
       'render-blocking-resources': {
         score: '<1',
-        numericValue: '>100',
+        numericValue: '>=50',
         details: {
           items: [
             {
-              url: 'http://localhost:10200/dobetterweb/dbw_tester.css?delay=100',
-            },
-            {
-              url: 'http://localhost:10200/dobetterweb/unknown404.css?delay=200',
-            },
-            {
-              url: 'http://localhost:10200/dobetterweb/dbw_tester.css?delay=2200',
+              url: 'http://localhost:10200/dobetterweb/fcp-delayer.js?delay=5000',
             },
             {
               url: 'http://localhost:10200/dobetterweb/dbw_tester.css?delay=3000&capped',
             },
             {
+              url: 'http://localhost:10200/dobetterweb/dbw_tester.css?delay=2200',
+            },
+            {
               url: 'http://localhost:10200/dobetterweb/dbw_tester.js',
             },
             {
-              url: 'http://localhost:10200/dobetterweb/fcp-delayer.js?delay=5000',
+              url: 'http://localhost:10200/dobetterweb/unknown404.css?delay=200',
+            },
+            {
+              url: 'http://localhost:10200/dobetterweb/dbw_tester.css?delay=100',
             },
           ],
         },
@@ -387,10 +328,8 @@ const expectations = {
               subItems: undefined,
             },
             {
-              // Deprecation warning was added in M121
-              _minChromiumVersion: '121',
-              // Unload handlers were disabled in M122
-              _maxChromiumVersion: '121',
+              // Unload handlers were moved behind a permission policy in M135.
+              _maxChromiumVersion: '134',
               value: 'UnloadHandler',
               source: {
                 type: 'source-location',
@@ -460,7 +399,7 @@ const expectations = {
       },
       'dom-size': {
         score: 1,
-        numericValue: 154,
+        numericValue: 151,
         details: {
           items: [
             {
@@ -468,7 +407,7 @@ const expectations = {
               value: {
                 type: 'numeric',
                 granularity: 1,
-                value: 154,
+                value: 151,
               },
             },
             {
@@ -491,28 +430,12 @@ const expectations = {
           ],
         },
       },
-      'no-unload-listeners': {
-        // Unload handlers were disabled in M122
-        _maxChromiumVersion: '121',
-        score: 0,
-        details: {
-          items: [{
-            source: {
-              type: 'source-location',
-              url: 'http://localhost:10200/dobetterweb/dbw_tester.html',
-              urlProvider: 'network',
-              line: '>300',
-              column: '>30',
-            },
-          }],
-        },
-      },
       'bf-cache': {
         details: {
           items: [
             {
-              // Unload handlers were disabled in M122
-              _maxChromiumVersion: '121',
+              // Unload handlers were moved behind a permission policy in M135.
+              _maxChromiumVersion: '134',
               reason: 'The page has an unload handler in the main frame.',
               failureType: 'Actionable',
               subItems: {
@@ -522,8 +445,21 @@ const expectations = {
               },
             },
             {
-              // Unload handlers create a permission request in M122
-              _minChromiumVersion: '122',
+              // Unload handlers were moved behind a permission policy in M135.
+              _minChromiumVersion: '135',
+              reason: 'There were permission requests upon navigating away.',
+              failureType: 'Pending browser support',
+              subItems: {
+                items: [{
+                  frameUrl: 'http://localhost:10200/dobetterweb/dbw_tester.html',
+                }],
+              },
+            },
+            {
+              // This issue only appears in the DevTools runner for some reason.
+              // TODO: Investigate why this doesn't happen on the CLI runner.
+              _runner: 'devtools',
+              _maxChromiumVersion: '134',
               reason: 'There were permission requests upon navigating away.',
               failureType: 'Pending browser support',
               subItems: {

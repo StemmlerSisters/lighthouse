@@ -17,8 +17,6 @@ import {createRequire} from 'module';
 import esMain from 'es-main';
 import esbuild from 'esbuild';
 // @ts-expect-error: plugin has no types.
-import PubAdsPlugin from 'lighthouse-plugin-publisher-ads';
-// @ts-expect-error: plugin has no types.
 import SoftNavPlugin from 'lighthouse-plugin-soft-navigation';
 
 import * as plugins from './esbuild-plugins.js';
@@ -37,10 +35,7 @@ const require = createRequire(import.meta.url);
 const GIT_READABLE_REF =
   execSync(process.env.CI ? 'git rev-parse HEAD' : 'git describe').toString().trim();
 
-// HACK: manually include the lighthouse-plugin-publisher-ads audits.
-/** @type {Array<string>} */
-// @ts-expect-error
-const pubAdsAudits = PubAdsPlugin.audits.map(a => a.path);
+// HACK: manually include plugin audits.
 /** @type {Array<string>} */
 // @ts-expect-error
 const softNavAudits = SoftNavPlugin.audits.map(a => a.path);
@@ -93,10 +88,6 @@ async function buildBundle(entryPath, distPath, opts = {minify: true}) {
 
   // Include plugins.
   if (isDevtools(entryPath) || isLightrider(entryPath)) {
-    dynamicModulePaths.push('lighthouse-plugin-publisher-ads');
-    pubAdsAudits.forEach(pubAdAudit => {
-      dynamicModulePaths.push(pubAdAudit);
-    });
     dynamicModulePaths.push('lighthouse-plugin-soft-navigation');
     softNavAudits.forEach(softNavAudit => {
       dynamicModulePaths.push(softNavAudit);
@@ -143,6 +134,11 @@ async function buildBundle(entryPath, distPath, opts = {minify: true}) {
   // Don't include locales in DevTools.
   if (isDevtools(entryPath)) {
     shimsObj[`${LH_ROOT}/shared/localization/locales.js`] = 'export const locales = {};';
+  }
+
+  // Don't bundle third-party-web (CDT provides its own copy). This prevents duplications of 40+ KB.
+  if (isDevtools(entryPath)) {
+    shimsObj['third-party-web/nostats-subset.js'] = 'export default {};';
   }
 
   for (const modulePath of modulesToIgnore) {

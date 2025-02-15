@@ -61,7 +61,7 @@ class LayoutShifts extends Audit {
   static async audit(artifacts, context) {
     const trace = artifacts.traces[Audit.DEFAULT_PASS];
     const traceEngineResult = await TraceEngineResult.request({trace}, context);
-    const clusters = traceEngineResult.LayoutShifts.clusters ?? [];
+    const clusters = traceEngineResult.data.LayoutShifts.clusters ?? [];
     const {cumulativeLayoutShift: clsSavings, impactByNodeId} =
       await CumulativeLayoutShiftComputed.request(trace, context);
     const traceElements = artifacts.TraceElements
@@ -69,13 +69,16 @@ class LayoutShifts extends Audit {
 
     /** @type {Item[]} */
     const items = [];
-    const layoutShiftEvents = clusters.flatMap(c => c.events);
+    const layoutShiftEvents =
+      /** @type {import('../lib/trace-engine.js').SaneSyntheticLayoutShift[]} */(
+        clusters.flatMap(c => c.events)
+      );
     const topLayoutShiftEvents = layoutShiftEvents
       .sort((a, b) => b.args.data.weighted_score_delta - a.args.data.weighted_score_delta)
       .slice(0, MAX_LAYOUT_SHIFTS);
     for (const event of topLayoutShiftEvents) {
       const biggestImpactNodeId = TraceElements.getBiggestImpactNodeForShiftEvent(
-        event.args.data.impacted_nodes, impactByNodeId);
+        event.args.data.impacted_nodes || [], impactByNodeId, event);
       const biggestImpactElement = traceElements.find(t => t.nodeId === biggestImpactNodeId);
 
       // Turn root causes into sub-items.

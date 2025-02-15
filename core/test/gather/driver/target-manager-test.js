@@ -125,6 +125,21 @@ describe('TargetManager', () => {
       expect(sendMock.findAllInvocations('Runtime.runIfWaitingForDebugger')).toHaveLength(1);
     });
 
+    it('should ignore errors if Target.getTargetInfo is undefined', async () => {
+      targetInfo.type = 'worker';
+      sendMock
+        .mockResponse('Target.getTargetInfo', () => {
+          throw new Error(`'Target.getTargetInfo' wasn't found`);
+        });
+      await targetManager.enable();
+
+      const invocations = sendMock.findAllInvocations('Target.setAutoAttach');
+      expect(invocations).toHaveLength(0);
+
+      // Should still be resumed.
+      expect(sendMock.findAllInvocations('Runtime.runIfWaitingForDebugger')).toHaveLength(1);
+    });
+
     it('should ignore targets that are not frames or web workers', async () => {
       targetInfo.type = 'service_worker';
       sendMock
@@ -189,7 +204,8 @@ describe('TargetManager', () => {
         .mockResponse('Target.getTargetInfo', {targetInfo})
         .mockResponse('Network.enable')
         .mockResponse('Target.setAutoAttach', () => Promise.reject(fatalError));
-      await expect(targetManager.enable()).rejects.toMatchObject({message: 'Fatal error'});
+      await expect(targetManager.enable()).rejects.toThrowError(
+        'Protocol error (Target.setAutoAttach): Fatal error');
 
       // Should still attempt to resume target.
       expect(sendMock.findAllInvocations('Runtime.runIfWaitingForDebugger')).toHaveLength(1);

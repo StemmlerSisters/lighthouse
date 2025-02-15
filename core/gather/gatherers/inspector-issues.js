@@ -76,10 +76,13 @@ class InspectorIssues extends BaseGatherer {
       lowTextContrastIssue: [],
       mixedContentIssue: [],
       navigatorUserAgentIssue: [],
+      partitioningBlobURLIssue: [],
       propertyRuleIssue: [],
       quirksModeIssue: [],
       cookieIssue: [],
+      selectElementAccessibilityIssue: [],
       sharedArrayBufferIssue: [],
+      sharedDictionaryIssue: [],
       stylesheetLoadingIssue: [],
       federatedAuthUserInfoRequestIssue: [],
     };

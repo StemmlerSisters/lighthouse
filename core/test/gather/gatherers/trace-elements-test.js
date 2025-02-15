@@ -9,7 +9,7 @@ import {createTestTrace, rootFrame} from '../../create-test-trace.js';
 import {flushAllTimersAndMicrotasks, readJson, timers} from '../../test-utils.js';
 import {createMockDriver} from '../mock-driver.js';
 
-const animationTrace = readJson('../../fixtures/artifacts/animation/trace.json', import.meta);
+const animationTrace = readJson('../../fixtures/artifacts/animation/trace.json.gz', import.meta);
 
 const RootCauses = {layoutShifts: {}};
 
@@ -74,106 +74,12 @@ function makeLCPTraceEvent(nodeId) {
   };
 }
 
-describe('Trace Elements gatherer - GetTopLayoutShiftElements', () => {
-  it('returns layout shift data sorted by impact area', async () => {
-    const trace = createTestTrace({});
-    trace.traceEvents.push(
-      makeLayoutShiftTraceEvent(1, [
-        {
-          new_rect: [0, 0, 200, 200],
-          node_id: 60,
-          old_rect: [0, 0, 200, 100],
-        },
-        {
-          new_rect: [0, 300, 200, 200],
-          node_id: 25,
-          old_rect: [0, 100, 200, 100],
-        },
-      ])
-    );
-
-    const result =
-      await TraceElementsGatherer.getTopLayoutShiftElements(trace, {computedCache: new Map()});
-    expect(result).toEqual([
-      {nodeId: 25}, // score: 0.6
-      {nodeId: 60}, // score: 0.4
-    ]);
-  });
-
-  it('returns only the top 15 values', async () => {
-    const trace = createTestTrace({});
-    trace.traceEvents.push(
-      makeLayoutShiftTraceEvent(1, [
-        {
-          new_rect: [0, 100, 100, 100],
-          node_id: 1,
-          old_rect: [0, 0, 100, 100],
-        },
-        {
-          new_rect: [0, 200, 100, 100],
-          node_id: 2,
-          old_rect: [0, 100, 100, 100],
-        },
-      ]),
-      makeLayoutShiftTraceEvent(1, [
-        {
-          new_rect: [0, 100, 200, 200],
-          node_id: 3,
-          old_rect: [0, 100, 200, 200],
-        },
-      ]),
-      makeLayoutShiftTraceEvent(0.75, [
-        {
-          new_rect: [0, 0, 100, 50],
-          node_id: 4,
-          old_rect: [0, 0, 100, 100],
-        },
-        {
-          new_rect: [0, 0, 100, 50],
-          node_id: 5,
-          old_rect: [0, 0, 100, 100],
-        },
-        {
-          new_rect: [0, 0, 100, 200],
-          node_id: 6,
-          old_rect: [0, 0, 100, 100],
-        },
-        {
-          new_rect: [0, 0, 100, 200],
-          node_id: 7,
-          old_rect: [0, 0, 100, 100],
-        },
-      ]),
-      makeLayoutShiftTraceEvent(1,
-        Array(10).fill({
-          new_rect: [0, 0, 100, 200],
-          old_rect: [0, 0, 100, 100],
-        }).map((event, i) => ({
-          ...event,
-          node_id: i + 8,
-        }))
-      )
-    );
-
-    const result =
-      await TraceElementsGatherer.getTopLayoutShiftElements(trace, {computedCache: new Map()});
-    expect(result).toEqual([
-      {nodeId: 3}, // score: 1.0
-      {nodeId: 1}, // score: 0.5
-      {nodeId: 2}, // score: 0.5
-      {nodeId: 6}, // score: 0.25
-      {nodeId: 7}, // score: 0.25
-      {nodeId: 4}, // score: 0.125
-      {nodeId: 5}, // score: 0.125
-      {nodeId: 8}, // score: 0.1
-      {nodeId: 9}, // score: 0.1
-      {nodeId: 10}, // score: 0.1
-      {nodeId: 11}, // score: 0.1
-      {nodeId: 12}, // score: 0.1
-      {nodeId: 13}, // score: 0.1
-      {nodeId: 14}, // score: 0.1
-      {nodeId: 15}, // score: 0.1
-    ]);
+describe('Trace Elements gatherer - GetTopLayoutShifts', () => {
+  describe('getBiggestImpactForShiftEvent', () => {
+    it('is non fatal if impactedNodes is not iterable', () => {
+      const result = TraceElementsGatherer.getBiggestImpactNodeForShiftEvent(1, new Map());
+      expect(result).toBeUndefined();
+    });
   });
 });
 
@@ -312,19 +218,18 @@ describe('Trace Elements gatherer - Animated Elements', () => {
 
     const driver = createMockDriver();
     driver._session.sendCommand
-      // nodeId: 6
-      .mockResponse('DOM.resolveNode', {object: {objectId: 1}})
-      .mockResponse('Runtime.callFunctionOn', {result: {value: LCPNodeData}})
-      // nodeId: 4
-      .mockResponse('DOM.resolveNode', {object: {objectId: 2}})
+      // Trace engine 1 / Shifts 1
+      .mockResponse('DOM.resolveNode', {object: {objectId: 4}})
       .mockResponse('Runtime.callFunctionOn', {result: {value: layoutShiftNodeData}})
-      // nodeId: 7
-      .mockResponse('DOM.resolveNode', () => { // 2nd CLS node
-        throw Error('No node found');
-      })
-      // nodeId: 5
-      .mockResponse('DOM.resolveNode', {object: {objectId: 3}})
-      .mockResponse('Runtime.callFunctionOn', {result: {value: animationNodeData}});
+      // Trace engine 2
+      .mockResponse('DOM.resolveNode', {object: {objectId: 7}})
+      .mockResponse('Runtime.callFunctionOn', {result: {value: null}})
+      // Trace engine 3 / Animations 1
+      .mockResponse('DOM.resolveNode', {object: {objectId: 5}})
+      .mockResponse('Runtime.callFunctionOn', {result: {value: animationNodeData}})
+      // LCP 1
+      .mockResponse('DOM.resolveNode', {object: {objectId: 5}})
+      .mockResponse('Runtime.callFunctionOn', {result: {value: LCPNodeData}});
 
     const trace = createTestTrace({timeOrigin: 0, traceEnd: 2000});
     trace.traceEvents.push(
@@ -360,23 +265,28 @@ describe('Trace Elements gatherer - Animated Elements', () => {
 
     expect(sorted).toEqual([
       {
-        traceEventType: 'largest-contentful-paint',
+        ...layoutShiftNodeData,
+        traceEventType: 'trace-engine',
+        nodeId: 4,
+      },
+      {
+        ...animationNodeData,
+        traceEventType: 'trace-engine',
+        nodeId: 5,
+      },
+      {
         ...LCPNodeData,
+        traceEventType: 'largest-contentful-paint',
         nodeId: 6,
       },
       {
-        traceEventType: 'layout-shift-element',
         ...layoutShiftNodeData,
-        nodeId: 4,
-      },
-      {
         traceEventType: 'layout-shift',
-        ...layoutShiftNodeData,
         nodeId: 4,
       },
       {
-        traceEventType: 'animation',
         ...animationNodeData,
+        traceEventType: 'animation',
         animations: [
           {name: 'example', failureReasonsMask: 8192, unsupportedProperties: ['height']},
         ],
@@ -424,9 +334,9 @@ describe('Trace Elements gatherer - Animated Elements', () => {
       .mockResponse('Runtime.callFunctionOn', {result: {value: compositedNodeData}});
 
     const gatherer = new TraceElementsGatherer();
-    gatherer.animationIdToName.set('2', 'alpha');
-    gatherer.animationIdToName.set('3', 'beta');
-    gatherer.animationIdToName.set('4', 'gamma');
+    gatherer.animationIdToName.set('3', 'alpha');
+    gatherer.animationIdToName.set('4', 'beta');
+    gatherer.animationIdToName.set('2', 'gamma');
 
     const result = await gatherer.getArtifact({
       driver,
@@ -463,7 +373,6 @@ describe('Trace Elements gatherer - Animated Elements', () => {
       },
     };
     const LCPNodeData = {
-      traceEventType: 'largest-contentful-paint',
       devtoolsNodePath: '1,HTML,1,BODY,1,DIV',
       selector: 'body > div#lcp',
       nodeLabel: 'div',
@@ -480,15 +389,18 @@ describe('Trace Elements gatherer - Animated Elements', () => {
     };
     const driver = createMockDriver();
     driver._session.sendCommand
-      .mockResponse('DOM.resolveNode', {object: {objectId: 1}})
-      .mockResponse('Runtime.callFunctionOn', {result: {value: LCPNodeData}})
-      // Animation 1
+      // Trace engine 1 / Animation 1
       .mockResponse('DOM.resolveNode', () => {
         throw Error();
       })
+      // Trace engine 2 / Animation 2
+      .mockResponse('DOM.resolveNode', {object: {objectId: 6}})
+      .mockResponse('Runtime.callFunctionOn', {result: {value: animationNodeData}})
+      // LCP 1
+      .mockResponse('DOM.resolveNode', {object: {objectId: 7}})
+      .mockResponse('Runtime.callFunctionOn', {result: {value: LCPNodeData}})
       // Animation 2
-      .mockResponse('DOM.resolveNode', {object: {objectId: 5}})
-      .mockResponse('Runtime.callFunctionOn', {result: {value: animationNodeData}});
+      .mockResponse('DOM.resolveNode', {object: {objectId: 6}});
 
     const trace = createTestTrace({timeOrigin: 0, traceEnd: 2000});
     trace.traceEvents.push(makeAnimationTraceEvent('0x363db876c8', 'b', {id: '1', nodeId: 5}));
@@ -515,11 +427,18 @@ describe('Trace Elements gatherer - Animated Elements', () => {
 
     expect(result).toEqual([
       {
+        ...animationNodeData,
+        traceEventType: 'trace-engine',
+        nodeId: 6,
+      },
+      {
         ...LCPNodeData,
+        traceEventType: 'largest-contentful-paint',
         nodeId: 7,
       },
       {
         ...animationNodeData,
+        traceEventType: 'animation',
         animations: [
           {name: 'example', failureReasonsMask: 8192, unsupportedProperties: ['color']},
         ],
@@ -528,10 +447,8 @@ describe('Trace Elements gatherer - Animated Elements', () => {
     ]);
   });
 
-
   it('properly handles timespans without FCP', async () => {
     const animationNodeData = {
-      traceEventType: 'animation',
       devtoolsNodePath: '1,HTML,1,BODY,1,DIV',
       selector: 'body > div#animated',
       nodeLabel: 'div',
@@ -547,6 +464,9 @@ describe('Trace Elements gatherer - Animated Elements', () => {
     };
     const driver = createMockDriver();
     driver._session.sendCommand
+      // Trace engine 1 (happens to be same node as Animation 1)
+      .mockResponse('DOM.resolveNode', {object: {objectId: 5}})
+      .mockResponse('Runtime.callFunctionOn', {result: {value: animationNodeData}})
       // Animation 1
       .mockResponse('DOM.resolveNode', {object: {objectId: 5}})
       .mockResponse('Runtime.callFunctionOn', {result: {value: animationNodeData}});
@@ -572,6 +492,13 @@ describe('Trace Elements gatherer - Animated Elements', () => {
     expect(result).toEqual([
       {
         ...animationNodeData,
+        traceEventType: 'trace-engine',
+        animations: undefined,
+        nodeId: 5,
+      },
+      {
+        ...animationNodeData,
+        traceEventType: 'animation',
         animations: [
           {name: 'example', failureReasonsMask: 8192, unsupportedProperties: ['height']},
         ],

@@ -39,18 +39,14 @@ class ReportUtils {
     // For convenience, smoosh all AuditResults into their auditRef (which has just weight & group)
     if (typeof clone.categories !== 'object') throw new Error('No categories provided.');
 
-    /** @type {Map<string, Array<LH.ReportResult.AuditRef>>} */
-    const relevantAuditToMetricsMap = new Map();
+    /** @type {Map<string, LH.ReportResult.AuditRef>} */
+    const acronymToMetricMap = new Map();
 
     for (const category of Object.values(clone.categories)) {
       // Make basic lookup table for relevantAudits
       category.auditRefs.forEach(metricRef => {
-        if (!metricRef.relevantAudits) return;
-        metricRef.relevantAudits.forEach(auditId => {
-          const arr = relevantAuditToMetricsMap.get(auditId) || [];
-          arr.push(metricRef);
-          relevantAuditToMetricsMap.set(auditId, arr);
-        });
+        if (!metricRef.acronym) return;
+        acronymToMetricMap.set(metricRef.acronym, metricRef);
       });
 
       category.auditRefs.forEach(auditRef => {
@@ -58,8 +54,15 @@ class ReportUtils {
         auditRef.result = result;
 
         // Attach any relevantMetric auditRefs
-        if (relevantAuditToMetricsMap.has(auditRef.id)) {
-          auditRef.relevantMetrics = relevantAuditToMetricsMap.get(auditRef.id);
+        const relevantAcronyms = Object.keys(auditRef.result.metricSavings || {});
+        if (relevantAcronyms.length) {
+          auditRef.relevantMetrics = [];
+          for (const acronym of relevantAcronyms) {
+            const metric = acronymToMetricMap.get(acronym);
+            if (!metric) continue;
+
+            auditRef.relevantMetrics.push(metric);
+          }
         }
 
         // attach the stackpacks to the auditRef object
@@ -415,6 +418,8 @@ const UIStrings = {
   dropdownSaveGist: 'Save as Gist',
   /** Option in a dropdown menu that toggles the themeing of the report between Light(default) and Dark themes. */
   dropdownDarkTheme: 'Toggle Dark Theme',
+  /** Option in a dropdown menu that toggles the type of performance insights displayed. */
+  dropdownInsightsToggle: 'Toggle experimental insights',
   /** Option in a dropdown menu that opens the trace of the page without throttling. "Unthrottled" can be replaced with "Original". */
   dropdownViewUnthrottledTrace: 'View Unthrottled Trace',
 
@@ -476,9 +481,6 @@ const UIStrings = {
   openInANewTabTooltip: 'Open in a new tab',
   /** Generic category name for all resources that could not be attributed to a 1st or 3rd party entity. */
   unattributable: 'Unattributable',
-
-  /** Message communicating the removal of the PWA category. */
-  pwaRemovalMessage: 'Alongside [Chrome’s updated Installability Criteria](https://developer.chrome.com/blog/update-install-criteria), Lighthouse will be deprecating the PWA category in a future release. Please refer to the [updated PWA documentation](https://developer.chrome.com/docs/devtools/progressive-web-apps/) for future PWA testing.',
 };
 
 export {

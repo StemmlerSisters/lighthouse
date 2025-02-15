@@ -1,3 +1,577 @@
+<a name="12.3.0"></a>
+# 12.3.0 (2024-12-12)
+[Full Changelog](https://github.com/GoogleChrome/lighthouse/compare/v12.2.3...v12.3.0)
+
+We expect this release to ship in the DevTools of [Chrome 133](https://chromiumdash.appspot.com/schedule), and to PageSpeed Insights within 2 weeks.
+
+## New contributors
+
+Thanks to our new contributors 👽🐷🐰🐯🐻!
+
+- Sebastian Neuner @sebastian9er
+
+## New Audits
+
+This release adds new security audits. These audits are informative and won't affect your best practices score.
+
+* Ensure proper origin isolation with COOP ([#16275](https://github.com/GoogleChrome/lighthouse/pull/16275))
+* Use a strong HSTS policy ([#16257](https://github.com/GoogleChrome/lighthouse/pull/16257))
+
+## Core
+
+* font-size: exclude invisible text ([#16281](https://github.com/GoogleChrome/lighthouse/pull/16281))
+
+## Deps
+
+* upgrade puppeteer to v23.10.4 ([#16279](https://github.com/GoogleChrome/lighthouse/pull/16279))
+* upgrade `trace_engine` to 0.0.38 ([#16269](https://github.com/GoogleChrome/lighthouse/pull/16269))
+
+## I18n
+
+* import ([#16283](https://github.com/GoogleChrome/lighthouse/pull/16283))
+* inject strings from trace engine npm package ([#16272](https://github.com/GoogleChrome/lighthouse/pull/16272))
+
+## Docs
+
+* update releasing instructions ([#16252](https://github.com/GoogleChrome/lighthouse/pull/16252))
+
+## Tests
+
+* update network target type expectations ([#16273](https://github.com/GoogleChrome/lighthouse/pull/16273))
+* devtools: sync e2e ([#16253](https://github.com/GoogleChrome/lighthouse/pull/16253))
+
+<a name="12.2.3"></a>
+# 12.2.3 (2024-12-02)
+[Full Changelog](https://github.com/GoogleChrome/lighthouse/compare/v12.2.2...v12.2.3)
+
+This release is only for PageSpeed Insights and we expect it to ship within 2 weeks.
+
+## Notable Changes
+
+The CPU throttling factor for PageSpeed Insights has been adjusted ([#16256](https://github.com/GoogleChrome/lighthouse/pull/16256)) to account for the low CPU performance benchmarks typical in PageSpeed production environments. In general, TBT metric times for all sites should improve when testing with PageSpeed Insights.
+
+All other Lighthouse clients (Lighthouse CLI, the Node API, Lighthouse panel in DevTools, etc) should not be affected by this change.
+
+## Tests
+
+* inline-fs: fix error in Node 20 ([#16262](https://github.com/GoogleChrome/lighthouse/pull/16262))
+
+ <a name="12.2.2"></a>
+# 12.2.2 (2024-11-14)
+[Full Changelog](https://github.com/GoogleChrome/lighthouse/compare/v12.2.1...v12.2.2)
+
+We expect this release to ship in the DevTools of [Chrome 133](https://chromiumdash.appspot.com/schedule), and to PageSpeed Insights within 2 weeks.
+
+## New contributors
+
+Thanks to our new contributors 👽🐷🐰🐯🐻!
+
+- Nate @servusdei2018
+- Gareth Jones @G-Rath
+- JDev @JWebDev
+
+## Core
+
+* network-monitor: treat EventSource as non-critical ([#16225](https://github.com/GoogleChrome/lighthouse/pull/16225))
+* target-manager: ignore target if type is unknown ([#16221](https://github.com/GoogleChrome/lighthouse/pull/16221))
+
+## CLI
+
+* create writeFile destination if necessary ([#15990](https://github.com/GoogleChrome/lighthouse/pull/15990))
+
+## Deps
+
+* upgrade puppeteer to 23.8.0 ([#16248](https://github.com/GoogleChrome/lighthouse/pull/16248))
+* upgrade `third-party-web` to 0.26.1 ([#16219](https://github.com/GoogleChrome/lighthouse/pull/16219))
+* upgrade puppeteer to 23.5.2 ([#16220](https://github.com/GoogleChrome/lighthouse/pull/16220))
+* lighthouse-stack-packs: upgrade to 1.12.2 ([#16242](https://github.com/GoogleChrome/lighthouse/pull/16242))
+* lodash: migrate lodash to lodash-es ([#16211](https://github.com/GoogleChrome/lighthouse/pull/16211))
+* sentry: upgrade to v7 ([#16215](https://github.com/GoogleChrome/lighthouse/pull/16215))
+
+## Clients
+
+* lr: set CPU throttling based on benchmark ([#16226](https://github.com/GoogleChrome/lighthouse/pull/16226))
+* lr: fix wrong render-blocking-resources transfer size ([#16190](https://github.com/GoogleChrome/lighthouse/pull/16190))
+
+## I18n
+
+* import ([#16250](https://github.com/GoogleChrome/lighthouse/pull/16250))
+
+## Docs
+
+* readme: add `lighthouse-matchers` to related projects ([#16239](https://github.com/GoogleChrome/lighthouse/pull/16239))
+* readme: add Guardius to services list ([#16235](https://github.com/GoogleChrome/lighthouse/pull/16235))
+
+## Tests
+
+* smoke: fix devtools test runner & a11y errors ([#16236](https://github.com/GoogleChrome/lighthouse/pull/16236))
+
+## Misc
+
+* ci: upgrade old actions ([#16191](https://github.com/GoogleChrome/lighthouse/pull/16191))
+
+<a name="12.2.1"></a>
+# 12.2.1 (2024-09-06)
+[Full Changelog](https://github.com/GoogleChrome/lighthouse/compare/v12.2.0...v12.2.1)
+
+We expect this release to ship in the DevTools of [Chrome 130](https://chromiumdash.appspot.com/schedule), and to PageSpeed Insights within 2 weeks.
+
+## Core
+
+* third-party-cookies: update description for 3PCD updates ([#16177](https://github.com/GoogleChrome/lighthouse/pull/16177), [#16158](https://github.com/GoogleChrome/lighthouse/pull/16158))
+* uses-text-compression: ignore percent threshold for large savings ([#16165](https://github.com/GoogleChrome/lighthouse/pull/16165))
+
+## Deps
+
+* upgrade puppeteer to 23.3.0 ([#16178](https://github.com/GoogleChrome/lighthouse/pull/16178), [#16161](https://github.com/GoogleChrome/lighthouse/pull/16161))
+* upgrade `axe-core` to 4.10.0 ([#16162](https://github.com/GoogleChrome/lighthouse/pull/16162))
+
+## Clients
+
+* devtools: require third-party-web to be provided ([#16166](https://github.com/GoogleChrome/lighthouse/pull/16166))
+
+## I18n
+
+* support reusing the same placeholder for ICU ([#16159](https://github.com/GoogleChrome/lighthouse/pull/16159))
+
+## Tests
+
+* pass logger to smokehouse runners to get log even on timeout ([#16175](https://github.com/GoogleChrome/lighthouse/pull/16175))
+* update BUILD.gn due to upstream CDT change ([#16171](https://github.com/GoogleChrome/lighthouse/pull/16171))
+* devtools: sync e2e ([#16174](https://github.com/GoogleChrome/lighthouse/pull/16174))
+* devtools: sync e2e ([#16160](https://github.com/GoogleChrome/lighthouse/pull/16160))
+
+## Misc
+
+* format lighthouse-result.proto ([#16170](https://github.com/GoogleChrome/lighthouse/pull/16170))
+
+<a name="12.2.0"></a>
+# 12.2.0 (2024-08-07)
+[Full Changelog](https://github.com/GoogleChrome/lighthouse/compare/v12.1.0...v12.2.0)
+
+We expect this release to ship in the DevTools of [Chrome 129](https://chromiumdash.appspot.com/schedule), and to PageSpeed Insights within 2 weeks.
+
+## Core
+
+* import lantern from trace engine ([#16092](https://github.com/GoogleChrome/lighthouse/pull/16092))
+* long-tasks: link to latest guidance ([#16138](https://github.com/GoogleChrome/lighthouse/pull/16138))
+* stylesheets: disable transient stylesheet detection ([#16121](https://github.com/GoogleChrome/lighthouse/pull/16121))
+* third-party-summary: correct blocking time calculation ([#16117](https://github.com/GoogleChrome/lighthouse/pull/16117))
+* trace-engine-result: disable invalidations handler ([#16142](https://github.com/GoogleChrome/lighthouse/pull/16142))
+
+## Deps
+
+* upgrade `trace_engine` to 0.0.32 ([#16143](https://github.com/GoogleChrome/lighthouse/pull/16143))
+* upgrade puppeteer to 22.15.0 ([#16139](https://github.com/GoogleChrome/lighthouse/pull/16139))
+* upgrade `third-party-web` to 0.24.5 ([#16140](https://github.com/GoogleChrome/lighthouse/pull/16140))
+* upgrade puppeteer to 22.13.1 ([#16123](https://github.com/GoogleChrome/lighthouse/pull/16123))
+* upgrade typescript to 5.5.3 ([#16091](https://github.com/GoogleChrome/lighthouse/pull/16091))
+
+## Tests
+
+* devtools: sync e2e ([#16120](https://github.com/GoogleChrome/lighthouse/pull/16120))
+* treemap: ignore cookie deprecation error ([#16141](https://github.com/GoogleChrome/lighthouse/pull/16141))
+
+## Misc
+
+* remove alertdesk from README ([#16133](https://github.com/GoogleChrome/lighthouse/pull/16133))
+* build: update README.chromium when rolling devtools ([#16144](https://github.com/GoogleChrome/lighthouse/pull/16144))
+
+<a name="12.1.0"></a>
+# 12.1.0 (2024-06-18)
+[Full Changelog](https://github.com/GoogleChrome/lighthouse/compare/v12.0.0...v12.1.0)
+
+We expect this release to ship in the DevTools of [Chrome 128](https://chromiumdash.appspot.com/schedule), and to PageSpeed Insights within 2 weeks.
+
+## New Contributors
+
+Thanks to our new contributors 👽🐷🐰🐯🐻!
+
+- Hamir Mahal @hamirmahal
+- angad-sethi @angad-sethi
+- Junaid Ramzan @ajuni880
+
+## Notable Changes
+
+* remove first-meaningful-paint metric ([#16047](https://github.com/GoogleChrome/lighthouse/pull/16047))
+
+## Core
+
+* move simulator creation and network analysis to lib/lantern ([#16003](https://github.com/GoogleChrome/lighthouse/pull/16003))
+* handle target crash at any point ([#15985](https://github.com/GoogleChrome/lighthouse/pull/15985))
+* aria-allowed-role: fix title and description ([#16042](https://github.com/GoogleChrome/lighthouse/pull/16042))
+* inspector-issues: add shared dictionary issue ([#15993](https://github.com/GoogleChrome/lighthouse/pull/15993))
+* lantern: refactor to DevTools modules convention ([#16071](https://github.com/GoogleChrome/lighthouse/pull/16071))
+* lantern: rename files to PascalCase ([#16068](https://github.com/GoogleChrome/lighthouse/pull/16068))
+* lantern: remove last usages of Lighthouse NetworkRequest ([#16067](https://github.com/GoogleChrome/lighthouse/pull/16067))
+* lantern: remove usage of Lighthouse constants module ([#16062](https://github.com/GoogleChrome/lighthouse/pull/16062))
+* lantern: remove all LH types ([#16061](https://github.com/GoogleChrome/lighthouse/pull/16061))
+* lantern: move tbt-util.js to lib/lantern ([#16058](https://github.com/GoogleChrome/lighthouse/pull/16058))
+* lantern: separate TraceEngine specific code ([#16051](https://github.com/GoogleChrome/lighthouse/pull/16051))
+* lantern: extract main thread events w/o TraceProcessor ([#16049](https://github.com/GoogleChrome/lighthouse/pull/16049))
+* lantern: remove usage of Lighthouse's ProcessedNavigation ([#16048](https://github.com/GoogleChrome/lighthouse/pull/16048))
+* lantern: use LCP instead of FMP for TTI simulation bounds ([#16046](https://github.com/GoogleChrome/lighthouse/pull/16046))
+* lantern: use computed artifact to create graph using trace ([#16040](https://github.com/GoogleChrome/lighthouse/pull/16040))
+* lantern: rename NetworkRequest record to rawRequest ([#16037](https://github.com/GoogleChrome/lighthouse/pull/16037))
+* lantern: resolve some differences when using trace ([#16033](https://github.com/GoogleChrome/lighthouse/pull/16033))
+* lantern: create network graph from trace (experimental) ([#16026](https://github.com/GoogleChrome/lighthouse/pull/16026))
+* network: align headers end time with send when no data received ([#16044](https://github.com/GoogleChrome/lighthouse/pull/16044))
+* network: fix time units in network quiet calc ([#16013](https://github.com/GoogleChrome/lighthouse/pull/16013))
+* test: add generatable squoosh trace ([#15997](https://github.com/GoogleChrome/lighthouse/pull/15997))
+* test: add generatable trace for paint metrics ([#15994](https://github.com/GoogleChrome/lighthouse/pull/15994))
+* test: add generatable iframe trace ([#15995](https://github.com/GoogleChrome/lighthouse/pull/15995))
+* types: add missing fields to `Result.Category` and `NodeDetails` ([#16006](https://github.com/GoogleChrome/lighthouse/pull/16006))
+
+## CLI
+
+* stop treating chrome launcher kill() as async ([#15998](https://github.com/GoogleChrome/lighthouse/pull/15998))
+
+## Deps
+
+* upgrade puppeteer to 22.11.1 ([#16070](https://github.com/GoogleChrome/lighthouse/pull/16070))
+* upgrade `chrome-launcher` to 1.1.2 ([#16069](https://github.com/GoogleChrome/lighthouse/pull/16069))
+* upgrade puppeteer to 22.10.0 ([#16054](https://github.com/GoogleChrome/lighthouse/pull/16054))
+* upgrade `third-party-web` to 0.24.3 ([#16055](https://github.com/GoogleChrome/lighthouse/pull/16055))
+* upgrade `axe-core` to 4.9.1 ([#16056](https://github.com/GoogleChrome/lighthouse/pull/16056))
+
+## I18n
+
+* import ([#16080](https://github.com/GoogleChrome/lighthouse/pull/16080))
+
+## Docs
+
+* remove await from chrome.kill() ([#15982](https://github.com/GoogleChrome/lighthouse/pull/15982))
+
+## Tests
+
+* use newer traces in network-analyzer-test.js ([#16043](https://github.com/GoogleChrome/lighthouse/pull/16043))
+* default to 0 for network trace data length ([#16041](https://github.com/GoogleChrome/lighthouse/pull/16041))
+* update remaining old traces for Lantern ([#16039](https://github.com/GoogleChrome/lighthouse/pull/16039))
+* use new trace in metrics-test for pwa ([#16025](https://github.com/GoogleChrome/lighthouse/pull/16025))
+* update many test traces, support .json.gz ([#16007](https://github.com/GoogleChrome/lighthouse/pull/16007))
+* add timeout to runSmokeTest ([#16017](https://github.com/GoogleChrome/lighthouse/pull/16017))
+* fix devtools e2e test runner ([#16018](https://github.com/GoogleChrome/lighthouse/pull/16018))
+* reduce expected value of render-blocking-requests smoke ([#16011](https://github.com/GoogleChrome/lighthouse/pull/16011))
+* update interactive test trace ([#16001](https://github.com/GoogleChrome/lighthouse/pull/16001))
+* use new button class name for devtools run script ([#15999](https://github.com/GoogleChrome/lighthouse/pull/15999))
+* ci: remove reference to deleted smoke test ([#16010](https://github.com/GoogleChrome/lighthouse/pull/16010))
+* lantern: fix some tests not running ([#16073](https://github.com/GoogleChrome/lighthouse/pull/16073))
+* lantern: refactor to DevTools test convention ([#16072](https://github.com/GoogleChrome/lighthouse/pull/16072))
+* lantern: remove usage of devtoolsLog in simulator tests ([#16065](https://github.com/GoogleChrome/lighthouse/pull/16065))
+* lantern: remove usage of computed SpeedIndex ([#16064](https://github.com/GoogleChrome/lighthouse/pull/16064))
+* lantern: remove usage of computed PageDependencyGraph ([#16063](https://github.com/GoogleChrome/lighthouse/pull/16063))
+* lantern: use TraceEngine directly in test fixtures ([#16057](https://github.com/GoogleChrome/lighthouse/pull/16057))
+* lantern: remove Speedline from Lantern unit test for now ([#16060](https://github.com/GoogleChrome/lighthouse/pull/16060))
+* lantern: remove devtools log from tests ([#16050](https://github.com/GoogleChrome/lighthouse/pull/16050))
+
+## Misc
+
+* change connectionId from string to number ([#15983](https://github.com/GoogleChrome/lighthouse/pull/15983))
+* ci: fix deprecated node usage in checkout@v3 ([#16022](https://github.com/GoogleChrome/lighthouse/pull/16022))
+* strings: fix WebAuthetication typo ([#16028](https://github.com/GoogleChrome/lighthouse/pull/16028))
+
+<a name="12.0.0"></a>
+# 12.0.0 (2024-04-22)
+[Full Changelog](https://github.com/GoogleChrome/lighthouse/compare/v11.7.1...v12.0.0)
+
+We expect this release to ship in the DevTools of [Chrome 126](https://chromiumdash.appspot.com/schedule), and to PageSpeed Insights within 2 weeks.
+
+## New Contributors
+
+Thanks to our new contributors 👽🐷🐰🐯🐻!
+
+- Ashley Rich @A5hleyRich
+- MrAdib @JohnAdib
+
+## Notable Changes
+
+### PWA Category Removal
+
+As per [Chrome’s updated Installability Criteria](https://developer.chrome.com/blog/update-install-criteria), Lighthouse [has removed the PWA category](https://github.com/GoogleChrome/lighthouse/pull/15455). For future PWA testing, users will be directed to use the [updated PWA documentation](https://developer.chrome.com/docs/devtools/progressive-web-apps/).
+
+### SEO Category Reorganization
+
+The SEO category has been updated to reflect the priorities of Google search in 2024. As such, several audits have been removed or moved to other categories:
+
+* The `is-crawlable` audit is now weighted high enough to fail the SEO category on its own. ([#15933](https://github.com/GoogleChrome/lighthouse/pull/15933))
+* The `viewport` and `font-size` audits are no longer priorities for SEO, but are still important for UX in general so they have been moved to the best practices category. ([#15930](https://github.com/GoogleChrome/lighthouse/pull/15930))
+* The `plugins` audit is no longer a priority for SEO and has been removed. ([#15928](https://github.com/GoogleChrome/lighthouse/pull/15928))
+* The `tap-targets` audit is no longer a priority for SEO and has been replaced with the `target-size` audit in accessibility. ([#15906](https://github.com/GoogleChrome/lighthouse/pull/15906))
+
+### Overall Savings Deprecation
+
+The `overallSavingsMs` value on performance diagnostic audits has been deprecated ([#15902](https://github.com/GoogleChrome/lighthouse/pull/15902)). We recommend using `metricSavings.LCP` or `metricSavings.FCP` to understand the estimated metric savings of performance diagnostics.
+
+### 🆕 New Audits
+
+* The [`aria-conditional-attr`](https://dequeuniversity.com/rules/axe/4.9/aria-conditional-attr), [`aria-deprecated-role`](https://dequeuniversity.com/rules/axe/4.9/aria-deprecated-role) and [`aria-prohibited-attr`](https://dequeuniversity.com/rules/axe/4.9/aria-prohibited-attr) Axe checks have been added to the Lighthouse accessibility category. ([#15963](https://github.com/GoogleChrome/lighthouse/pull/15963))
+* The `redirects-http` audit has been brought back, but will only passively check for a http -> https redirect if the provided URL happens to be on http ([#13548](https://github.com/GoogleChrome/lighthouse/pull/13548))
+
+### Other Audit Changes
+
+* The `layout-shifts-elements` audit is removed. Improved layout shift information can be found in the `layout-shifts` audit. ([#15931](https://github.com/GoogleChrome/lighthouse/pull/15931))
+* The `no-unload-listeners` audit is removed. Unload listeners are deprecated and are still flagged in the `deprecations` and `bf-cache` audits. ([#15874](https://github.com/GoogleChrome/lighthouse/pull/15874))
+* The `duplicate-id-active` audit is removed because it's corresponding Axe check is deprecated. ([#15900](https://github.com/GoogleChrome/lighthouse/pull/15900))
+* The `uses-rel-preload` and `preload-fonts` audits have been moved to the experimental config. Preload advice is still on hold and these audits were already in a disabled state. ([#15876](https://github.com/GoogleChrome/lighthouse/pull/15876))
+
+## 💥 Breaking Changes
+
+* split up `CSSUsage` artifact ([#15952](https://github.com/GoogleChrome/lighthouse/pull/15952))
+* remove budgets ([#15950](https://github.com/GoogleChrome/lighthouse/pull/15950))
+* remove relevant audits lists from config ([#15878](https://github.com/GoogleChrome/lighthouse/pull/15878))
+* remove `ScriptElements` artifact ([#15879](https://github.com/GoogleChrome/lighthouse/pull/15879))
+* config: use explicit diagnostic group ([#15901](https://github.com/GoogleChrome/lighthouse/pull/15901))
+* service-worker: remove `service-worker` gatherer ([#15942](https://github.com/GoogleChrome/lighthouse/pull/15942))
+
+## Core
+
+* remove pre-v10 compat for page graph construction ([#15948](https://github.com/GoogleChrome/lighthouse/pull/15948))
+* a11y: re-enable target-size hidden audit ([#15888](https://github.com/GoogleChrome/lighthouse/pull/15888))
+* driver: add sendCommandAndIgnore ([#15913](https://github.com/GoogleChrome/lighthouse/pull/15913))
+* gather: handle crash if CDP target crashes ([#11840](https://github.com/GoogleChrome/lighthouse/pull/11840))
+* lantern: always use flexible network ordering ([#14612](https://github.com/GoogleChrome/lighthouse/pull/14612))
+* lantern: remove LR statistics ([#15946](https://github.com/GoogleChrome/lighthouse/pull/15946))
+* lantern: inline rtt constant ([#15944](https://github.com/GoogleChrome/lighthouse/pull/15944))
+* lantern: add LanternError and adapter to LH error ([#15937](https://github.com/GoogleChrome/lighthouse/pull/15937))
+* lantern: correct overlapping tasks in CPU nodes ([#15938](https://github.com/GoogleChrome/lighthouse/pull/15938))
+* lantern: duplicate isNonNetworkProtocol in lib/lantern ([#15936](https://github.com/GoogleChrome/lighthouse/pull/15936))
+* lantern: replace usage of LH.Artifacts.ProcessedTrace ([#15905](https://github.com/GoogleChrome/lighthouse/pull/15905))
+* lantern: move lantern metrics to lib/lantern ([#15875](https://github.com/GoogleChrome/lighthouse/pull/15875))
+* metric: remove gatherContext mode check ([#15899](https://github.com/GoogleChrome/lighthouse/pull/15899))
+* render-blocking: use trace engine as the source of truth ([#15839](https://github.com/GoogleChrome/lighthouse/pull/15839))
+* runner: use early return for readability ([#15914](https://github.com/GoogleChrome/lighthouse/pull/15914))
+* seo: support Persian in link-text audit ([#15949](https://github.com/GoogleChrome/lighthouse/pull/15949))
+* target-size: use binary display mode ([#15910](https://github.com/GoogleChrome/lighthouse/pull/15910))
+
+## Report
+
+* fix hidden audit handling for non-perf categories ([#15968](https://github.com/GoogleChrome/lighthouse/pull/15968))
+
+## Deps
+
+* upgrade `tldts-icann` to 6.1.16 ([#15967](https://github.com/GoogleChrome/lighthouse/pull/15967))
+* upgrade `third-party-web` to 0.24.2 ([#15966](https://github.com/GoogleChrome/lighthouse/pull/15966))
+* upgrade puppeteer to 22.6.5 ([#15951](https://github.com/GoogleChrome/lighthouse/pull/15951))
+
+## Clients
+
+* viewer: stop using legacy DOM api ([#15964](https://github.com/GoogleChrome/lighthouse/pull/15964))
+
+## I18n
+
+* import ([#15958](https://github.com/GoogleChrome/lighthouse/pull/15958))
+
+## Docs
+
+* bug-report: require users to read FAQs ([#14383](https://github.com/GoogleChrome/lighthouse/pull/14383))
+* readme: add DeploymentHawk to the list of integrations ([#15847](https://github.com/GoogleChrome/lighthouse/pull/15847))
+
+## Tests
+
+* refresh sample artifacts ([#15962](https://github.com/GoogleChrome/lighthouse/pull/15962))
+* invalidate devtools build cache ([#15947](https://github.com/GoogleChrome/lighthouse/pull/15947))
+* update network target type expectations ([#15916](https://github.com/GoogleChrome/lighthouse/pull/15916))
+
+## Misc
+
+* deduplicate all the dom helpers ([#15960](https://github.com/GoogleChrome/lighthouse/pull/15960))
+* merge changelog from branch-11 ([#15957](https://github.com/GoogleChrome/lighthouse/pull/15957))
+* remove `BenchmarkIndexes` base artifact ([#15941](https://github.com/GoogleChrome/lighthouse/pull/15941))
+* update public gatherer list ([#15940](https://github.com/GoogleChrome/lighthouse/pull/15940))
+* remove residual `lighthouse-cli` file ([#15935](https://github.com/GoogleChrome/lighthouse/pull/15935))
+* use "processing duration" instead of "processing time" for INP ([#15893](https://github.com/GoogleChrome/lighthouse/pull/15893))
+* treemap: fix column sorting when some values are blank ([#15959](https://github.com/GoogleChrome/lighthouse/pull/15959))
+
+<a name="11.7.1"></a>
+# 11.7.1 (2024-04-08)
+[Full Changelog](https://github.com/GoogleChrome/lighthouse/compare/v11.7.0...v11.7.1)
+
+We expect this release to ship in the DevTools of [Chrome 125](https://chromiumdash.appspot.com/schedule), and to PageSpeed Insights within 2 weeks.
+
+## New Contributors
+
+Thanks to our new contributors 👽🐷🐰🐯🐻!
+
+- lauren n. liberda @selfisekai
+
+## Core
+
+* network-request: recognize zstd compression algorithm ([#15883](https://github.com/GoogleChrome/lighthouse/pull/15883))
+* trace-elements: add sentry debugging for `impactedNodes` ([#15915](https://github.com/GoogleChrome/lighthouse/pull/15915))
+* trace-processor: correct overlapping tasks ([#15921](https://github.com/GoogleChrome/lighthouse/pull/15921))
+
+## Report
+
+* remove use of innerHTML to empty elements ([#15911](https://github.com/GoogleChrome/lighthouse/pull/15911))
+
+## Deps
+
+* upgrade `trace_engine` to 0.0.19 ([#15926](https://github.com/GoogleChrome/lighthouse/pull/15926))
+* upgrade axe-core to 4.9.0 ([#15887](https://github.com/GoogleChrome/lighthouse/pull/15887))
+
+## Tests
+
+* remove Access-Control-Allow-Origin for robots.txt ([#15895](https://github.com/GoogleChrome/lighthouse/pull/15895))
+* devtools: sync e2e ([#15917](https://github.com/GoogleChrome/lighthouse/pull/15917))
+
+## Misc
+
+* correct .npmignore for node >=18.20 ([#15924](https://github.com/GoogleChrome/lighthouse/pull/15924))
+* proto: ensure all strings are well-formed ([#15909](https://github.com/GoogleChrome/lighthouse/pull/15909))
+
+<a name="11.7.0"></a>
+# 11.7.0 (2024-03-20)
+[Full Changelog](https://github.com/GoogleChrome/lighthouse/compare/v11.6.0...v11.7.0)
+
+We expect this release to ship in the DevTools of [Chrome 125](https://chromiumdash.appspot.com/schedule), and to PageSpeed Insights within 2 weeks.
+
+## Notable Changes
+
+* The publisher ads plugin is out of date and will not be supported in Chrome DevTools M125 ([#15843](https://github.com/GoogleChrome/lighthouse/pull/15843))
+
+## Core
+
+* fix regression in internal chrome error messages ([#15853](https://github.com/GoogleChrome/lighthouse/pull/15853))
+* a11y: disable target-size hidden audit ([#15854](https://github.com/GoogleChrome/lighthouse/pull/15854))
+* css-usage: prevent late stylesheet additions ([#15865](https://github.com/GoogleChrome/lighthouse/pull/15865))
+* driver: don't await cleanup in PAGE_HUNG case ([#15833](https://github.com/GoogleChrome/lighthouse/pull/15833))
+* driver: fix protocol timeout being ignored for isolated eval ([#15826](https://github.com/GoogleChrome/lighthouse/pull/15826))
+* emulation: remove Lighthouse from client hint brand ([#15856](https://github.com/GoogleChrome/lighthouse/pull/15856))
+* full-page-screenshot: emit screenshot commands in parallel ([#15862](https://github.com/GoogleChrome/lighthouse/pull/15862))
+* full-page-screenshot: revise logic for determining dimensions ([#14920](https://github.com/GoogleChrome/lighthouse/pull/14920))
+* gather: gatherFn refactor ([#15830](https://github.com/GoogleChrome/lighthouse/pull/15830))
+* installable-manifest: add `manifest-parsing-or-network-error` ([#15849](https://github.com/GoogleChrome/lighthouse/pull/15849))
+* lantern: move types to lib/lantern ([#15859](https://github.com/GoogleChrome/lighthouse/pull/15859))
+* lantern: move LanternMetric in lib/lantern ([#15857](https://github.com/GoogleChrome/lighthouse/pull/15857))
+* lantern: refactor LH.Gatherer.Simulation ([#15852](https://github.com/GoogleChrome/lighthouse/pull/15852))
+* lantern: move PageDependencyGraph to lib/lantern ([#15851](https://github.com/GoogleChrome/lighthouse/pull/15851))
+* lantern: put types in namespace ([#15850](https://github.com/GoogleChrome/lighthouse/pull/15850))
+* lantern: rename lib/dependency-graph to lib/lantern ([#15844](https://github.com/GoogleChrome/lighthouse/pull/15844))
+* lantern: add interface for network request ([#15845](https://github.com/GoogleChrome/lighthouse/pull/15845))
+* lantern: use rendererStartTime instead of networkRequestTime ([#15834](https://github.com/GoogleChrome/lighthouse/pull/15834))
+* navigation-runner: only run `getArtifact` phase once ([#15827](https://github.com/GoogleChrome/lighthouse/pull/15827))
+* network-request: use rendererStartTime for initiator candidates ([#15832](https://github.com/GoogleChrome/lighthouse/pull/15832))
+* responsiveness: remove fallback trace event pre m103 ([#15866](https://github.com/GoogleChrome/lighthouse/pull/15866))
+
+## Deps
+
+* upgrade `chrome-launcher` to 1.1.1 ([#15871](https://github.com/GoogleChrome/lighthouse/pull/15871))
+* upgrade puppeteer to 22.5.0 ([#15867](https://github.com/GoogleChrome/lighthouse/pull/15867))
+* bump ip from 1.1.8 to 1.1.9 ([#15863](https://github.com/GoogleChrome/lighthouse/pull/15863))
+
+## I18n
+
+* import ([#15872](https://github.com/GoogleChrome/lighthouse/pull/15872))
+
+## Tests
+
+* devtools: use `is_debug = true` for local builds ([#15860](https://github.com/GoogleChrome/lighthouse/pull/15860))
+* devtools: skip type checking in local builds ([#15858](https://github.com/GoogleChrome/lighthouse/pull/15858))
+* devtools: sync e2e ([#15837](https://github.com/GoogleChrome/lighthouse/pull/15837))
+* full-page-screenshot: add node verification and debug tool ([#15324](https://github.com/GoogleChrome/lighthouse/pull/15324))
+
+<a name="11.6.0"></a>
+# 11.6.0 (2024-02-21)
+[Full Changelog](https://github.com/GoogleChrome/lighthouse/compare/v11.5.0...v11.6.0)
+
+We expect this release to ship in the DevTools of [Chrome 124](https://chromiumdash.appspot.com/schedule), and to PageSpeed Insights within 2 weeks.
+
+## Notable Changes
+
+* trace: disable JS samples ([#15819](https://github.com/GoogleChrome/lighthouse/pull/15819))
+
+## Core
+
+* driver: add verbose logs for wait-for page load components ([#15818](https://github.com/GoogleChrome/lighthouse/pull/15818))
+
+## Deps
+
+* upgrade puppeteer to 22.1.0 ([#15822](https://github.com/GoogleChrome/lighthouse/pull/15822))
+* upgrade trace_engine and drop manually written types ([#15810](https://github.com/GoogleChrome/lighthouse/pull/15810))
+* upgrade `axe-core` to 4.8.4 ([#15805](https://github.com/GoogleChrome/lighthouse/pull/15805))
+* upgrade puppeteer to 22.0.0 ([#15803](https://github.com/GoogleChrome/lighthouse/pull/15803))
+
+## I18n
+
+* import ([#15821](https://github.com/GoogleChrome/lighthouse/pull/15821))
+
+## Tests
+
+* dbw: revert expectations for unload handler removal ([#15802](https://github.com/GoogleChrome/lighthouse/pull/15802))
+
+## Misc
+
+* reword pwa banner ([#15800](https://github.com/GoogleChrome/lighthouse/pull/15800))
+* do not double report artifact dep error to sentry ([#15777](https://github.com/GoogleChrome/lighthouse/pull/15777))
+
+<a name="11.5.0"></a>
+# 11.5.0 (2024-01-23)
+[Full Changelog](https://github.com/GoogleChrome/lighthouse/compare/v11.4.0...v11.5.0)
+
+We expect this release to ship in the DevTools of [Chrome 123](https://chromiumdash.appspot.com/schedule), and to PageSpeed Insights within 2 weeks.
+
+## New Contributors
+
+Thanks to our new contributors 👽🐷🐰🐯🐻!
+
+- EvilKarter @EvilKarter
+
+## Notable Changes
+
+* New layout-shifts audit shows estimated root causes for layout shifts. This replaces the layout-shift-elements audit which only shows elements impacted by layout shifts. ([#15703](https://github.com/GoogleChrome/lighthouse/pull/15703), [#15730](https://github.com/GoogleChrome/lighthouse/pull/15730))
+* Informative audits now have a score of 1 instead of null ([#15689](https://github.com/GoogleChrome/lighthouse/pull/15689))
+* Added a warning for [PWA deprecation](https://developer.chrome.com/blog/update-install-criteria?hl=en) ([#15741](https://github.com/GoogleChrome/lighthouse/pull/15741))
+
+## Core
+
+* bump guidance level of top CWV recommendations ([#15695](https://github.com/GoogleChrome/lighthouse/pull/15695))
+* lower guidance level of unused- audits ([#15718](https://github.com/GoogleChrome/lighthouse/pull/15718))
+* create separate product savings type ([#15726](https://github.com/GoogleChrome/lighthouse/pull/15726))
+* round metric savings to remove false precision ([#15721](https://github.com/GoogleChrome/lighthouse/pull/15721))
+* fix mistake preventing gather/audit phases from sharing cache ([#15710](https://github.com/GoogleChrome/lighthouse/pull/15710))
+* cumulative-layout-shift: experiment with new shared trace engine ([#15702](https://github.com/GoogleChrome/lighthouse/pull/15702))
+* legacy-javascript: detect es-shims polyfills ([#15738](https://github.com/GoogleChrome/lighthouse/pull/15738))
+* network-request: consider secondary headers for content encoded check ([#15708](https://github.com/GoogleChrome/lighthouse/pull/15708))
+* render-blocking-resources: reduce metric savings if LCP is an image ([#15694](https://github.com/GoogleChrome/lighthouse/pull/15694))
+* target-manager: warn on errors while attaching to workers ([#15740](https://github.com/GoogleChrome/lighthouse/pull/15740))
+* trace: enable JS samples for advanced workflows ([#15542](https://github.com/GoogleChrome/lighthouse/pull/15542))
+* unused-css: exclude header size for estimating wasted bytes ([#15671](https://github.com/GoogleChrome/lighthouse/pull/15671))
+* viewport: include meta viewport string in debugDetails ([#15727](https://github.com/GoogleChrome/lighthouse/pull/15727))
+
+## Report
+
+* small renderAudit simplification ([#15725](https://github.com/GoogleChrome/lighthouse/pull/15725))
+* fix filmstrip wrap ([#15693](https://github.com/GoogleChrome/lighthouse/pull/15693))
+* performance: use metric savings for metric filter ([#15540](https://github.com/GoogleChrome/lighthouse/pull/15540))
+
+## Deps
+
+* upgrade puppeteer to 21.7.0 ([#15724](https://github.com/GoogleChrome/lighthouse/pull/15724))
+* upgrade esbuild to 0.19.11 ([#15731](https://github.com/GoogleChrome/lighthouse/pull/15731))
+
+## Clients
+
+* lr: include flag for ignoring bad page status code ([#15764](https://github.com/GoogleChrome/lighthouse/pull/15764))
+
+## Docs
+
+* update deprecated link to shared flags ([#15722](https://github.com/GoogleChrome/lighthouse/pull/15722))
+* user-flows: update complete flow example ([#15690](https://github.com/GoogleChrome/lighthouse/pull/15690))
+
+## Tests
+
+* check for console errors and warnings in pptr tests ([#15516](https://github.com/GoogleChrome/lighthouse/pull/15516))
+* fix ToT chrome install path ([#15753](https://github.com/GoogleChrome/lighthouse/pull/15753))
+* ci: stop using xvfb ([#15707](https://github.com/GoogleChrome/lighthouse/pull/15707))
+* dbw: update expectations for unload handler removal ([#15765](https://github.com/GoogleChrome/lighthouse/pull/15765))
+* dbw: fix server latency flake ([#15729](https://github.com/GoogleChrome/lighthouse/pull/15729))
+* mocha: fix snapshot expectations in retries ([#15735](https://github.com/GoogleChrome/lighthouse/pull/15735))
+
+## Misc
+
+* build: set line limit to 1000 ([#15733](https://github.com/GoogleChrome/lighthouse/pull/15733))
+* lighthouse-logger: add repo to package.json ([#15768](https://github.com/GoogleChrome/lighthouse/pull/15768))
+
 <a name="11.4.0"></a>
 # 11.4.0 (2023-12-11)
 [Full Changelog](https://github.com/GoogleChrome/lighthouse/compare/v11.3.0...v11.4.0)

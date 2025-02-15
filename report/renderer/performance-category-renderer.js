@@ -58,7 +58,7 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
     const fmp = auditRefs.find(audit => audit.id === 'first-meaningful-paint');
     if (tti) metrics.push(tti);
     if (fci) metrics.push(fci);
-    if (fmp) metrics.push(fmp);
+    if (fmp && typeof fmp.result.score === 'number') metrics.push(fmp);
 
     /**
      * Clamp figure to 2 decimal places
@@ -90,16 +90,6 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
     const url = new URL('https://googlechrome.github.io/lighthouse/scorecalc/');
     url.hash = params.toString();
     return url.href;
-  }
-
-  /**
-   * Returns true if the audit is a general performance insight (i.e. not a metric or hidden audit).
-   *
-   * @param {LH.ReportResult.AuditRef} audit
-   * @return {boolean}
-   */
-  _isPerformanceInsight(audit) {
-    return !audit.group;
   }
 
   /**
@@ -211,8 +201,42 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
       filmstripEl && timelineEl.append(filmstripEl);
     }
 
-    const allInsights = category.auditRefs
-      .filter(audit => this._isPerformanceInsight(audit))
+    const legacyAuditsSection =
+      this.renderFilterableSection(category, groups, 'diagnostics', metricAudits);
+    legacyAuditsSection?.classList.add('lh-perf-audits--legacy');
+
+    const experimentalInsightsSection =
+      this.renderFilterableSection(category, groups, 'insights', metricAudits);
+    experimentalInsightsSection?.classList.add('lh-perf-audits--experimental', 'lh-hidden');
+
+    if (legacyAuditsSection) element.append(legacyAuditsSection);
+    if (experimentalInsightsSection) element.append(experimentalInsightsSection);
+
+    const isNavigationMode = !options || options?.gatherMode === 'navigation';
+    if (isNavigationMode && category.score !== null) {
+      const el = createGauge(this.dom);
+      updateGauge(this.dom, el, category);
+      this.dom.find('.lh-score__gauge', element).replaceWith(el);
+    }
+
+    return element;
+  }
+
+  /**
+   * @param {LH.ReportResult.Category} category
+   * @param {Object<string, LH.Result.ReportGroup>} groups
+   * @param {string} groupName
+   * @param {LH.ReportResult.AuditRef[]} metricAudits
+   * @return {Element|null}
+   */
+  renderFilterableSection(category, groups, groupName, metricAudits) {
+    if (!groups[groupName]) return null;
+
+    const element = this.dom.createElement('div');
+
+    // Diagnostics
+    const allDiagnostics = category.auditRefs
+      .filter(audit => audit.group === groupName)
       .map(auditRef => {
         const {overallImpact, overallLinearImpact} = this.overallImpact(auditRef, metricAudits);
         const guidanceLevel = auditRef.result.guidanceLevel || 1;
@@ -221,21 +245,20 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
         return {auditRef, auditEl, overallImpact, overallLinearImpact, guidanceLevel};
       });
 
-    // Diagnostics
-    const diagnosticAudits = allInsights
+    const diagnosticAudits = allDiagnostics
       .filter(audit => !ReportUtils.showAsPassed(audit.auditRef.result));
 
-    const passedAudits = allInsights
+    const passedAudits = allDiagnostics
       .filter(audit => ReportUtils.showAsPassed(audit.auditRef.result));
 
-    const [groupEl, footerEl] = this.renderAuditGroup(groups['diagnostics']);
-    groupEl.classList.add('lh-audit-group--diagnostics');
+    const [diagnosticsGroupEl, diagnosticsFooterEl] = this.renderAuditGroup(groups[groupName]);
+    diagnosticsGroupEl.classList.add(`lh-audit-group--${groupName}`);
 
     /**
      * @param {string} acronym
      */
     function refreshFilteredAudits(acronym) {
-      for (const audit of allInsights) {
+      for (const audit of allDiagnostics) {
         if (acronym === 'All') {
           audit.auditEl.hidden = false;
         } else {
@@ -277,7 +300,7 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
       });
 
       for (const audit of diagnosticAudits) {
-        groupEl.insertBefore(audit.auditEl, footerEl);
+        diagnosticsGroupEl.insertBefore(audit.auditEl, diagnosticsFooterEl);
       }
     }
 
@@ -301,7 +324,7 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
     refreshFilteredAudits('All');
 
     if (diagnosticAudits.length) {
-      element.append(groupEl);
+      element.append(diagnosticsGroupEl);
     }
 
     if (!passedAudits.length) return element;
@@ -312,34 +335,6 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
     };
     const passedElem = this.renderClump('passed', clumpOpts);
     element.append(passedElem);
-
-    // Budgets
-    /** @type {Array<Element>} */
-    const budgetTableEls = [];
-    ['performance-budget', 'timing-budget'].forEach((id) => {
-      const audit = category.auditRefs.find(audit => audit.id === id);
-      if (audit?.result.details) {
-        const table = this.detailsRenderer.render(audit.result.details);
-        if (table) {
-          table.id = id;
-          table.classList.add('lh-details', 'lh-details--budget', 'lh-audit');
-          budgetTableEls.push(table);
-        }
-      }
-    });
-    if (budgetTableEls.length > 0) {
-      const [groupEl, footerEl] = this.renderAuditGroup(groups.budgets);
-      budgetTableEls.forEach(table => groupEl.insertBefore(table, footerEl));
-      groupEl.classList.add('lh-audit-group--budgets');
-      element.append(groupEl);
-    }
-
-    const isNavigationMode = !options || options?.gatherMode === 'navigation';
-    if (isNavigationMode && category.score !== null) {
-      const el = createGauge(this.dom);
-      updateGauge(this.dom, el, category);
-      this.dom.find('.lh-score__gauge', element).replaceWith(el);
-    }
 
     return element;
   }

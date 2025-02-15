@@ -126,7 +126,7 @@ function waitForFcp(session, pauseAfterFcpMs, maxWaitForFcpMs) {
  */
 function waitForNetworkIdle(session, networkMonitor, networkQuietOptions) {
   let hasDCLFired = false;
-  /** @type {NodeJS.Timer|undefined} */
+  /** @type {NodeJS.Timeout|undefined} */
   let idleTimeout;
   /** @type {(() => void)} */
   let cancel = () => {
@@ -225,7 +225,7 @@ function waitForCPUIdle(session, waitForCPUQuiet) {
     };
   }
 
-  /** @type {NodeJS.Timer|undefined} */
+  /** @type {NodeJS.Timeout|undefined} */
   let lastTimeout;
   let canceled = false;
 
@@ -355,7 +355,7 @@ function waitForLoadEvent(session, pauseAfterLoadMs) {
   };
 
   const promise = new Promise((resolve, reject) => {
-    /** @type {NodeJS.Timer|undefined} */
+    /** @type {NodeJS.Timeout|undefined} */
     let loadTimeout;
     const loadListener = function() {
       loadTimeout = setTimeout(resolve, pauseAfterLoadMs);
@@ -420,7 +420,7 @@ async function waitForFullyLoaded(session, networkMonitor, options) {
     cpuQuietThresholdMs, maxWaitForLoadedMs, maxWaitForFcpMs} = options;
   const {waitForFcp, waitForLoadEvent, waitForNetworkIdle, waitForCPUIdle} =
     options._waitForTestOverrides || DEFAULT_WAIT_FUNCTIONS;
-  /** @type {NodeJS.Timer|undefined} */
+  /** @type {NodeJS.Timeout|undefined} */
   let maxTimeoutHandle;
 
   // Listener for FCP. Resolves pauseAfterFcpMs ms after first FCP event.
@@ -445,6 +445,21 @@ async function waitForFullyLoaded(session, networkMonitor, options) {
   });
   // CPU listener. Resolves when the CPU has been idle for cpuQuietThresholdMs after network idle.
   let resolveOnCPUIdle = waitForNothing();
+
+  if (log.isVerbose()) {
+    resolveOnFcp.promise.then(() => {
+      log.verbose('waitFor', 'resolveOnFcp fired');
+    });
+    resolveOnLoadEvent.promise.then(() => {
+      log.verbose('waitFor', 'resolveOnLoadEvent fired');
+    });
+    resolveOnNetworkIdle.promise.then(() => {
+      log.verbose('waitFor', 'resolveOnNetworkIdle fired');
+    });
+    resolveOnCriticalNetworkIdle.promise.then(() => {
+      log.verbose('waitFor', 'resolveOnCriticalNetworkIdle fired');
+    });
+  }
 
   // Wait for all initial load promises. Resolves on cleanup function the clears load
   // timeout timer.
@@ -482,8 +497,9 @@ async function waitForFullyLoaded(session, networkMonitor, options) {
       log.warn('waitFor', 'Timed out waiting for page load. Checking if page is hung...');
       if (await isPageHung(session)) {
         log.warn('waitFor', 'Page appears to be hung, killing JavaScript...');
-        await session.sendCommand('Emulation.setScriptExecutionDisabled', {value: true});
-        await session.sendCommand('Runtime.terminateExecution');
+        // We don't await these, as we want to exit with PAGE_HUNG
+        void session.sendCommandAndIgnore('Emulation.setScriptExecutionDisabled', {value: true});
+        void session.sendCommandAndIgnore('Runtime.terminateExecution');
         throw new LighthouseError(LighthouseError.errors.PAGE_HUNG);
       }
 
