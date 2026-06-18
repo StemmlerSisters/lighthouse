@@ -202,7 +202,7 @@
     "third-party-web": "^0.29.2",
     "tldts-icann": "^7.4.2",
     "web-features": "^3.30.0",
-    "ws": "^7.0.0",
+    "ws": "^7.5.11",
     "yargs": "^17.3.1",
     "yargs-parser": "^21.0.0"
   },
